@@ -1,3 +1,5 @@
+
+
 // Toy Robot Simulator
 // --------------------
 // Create a library that can read in commands of the following form:
@@ -88,6 +90,7 @@ class Robot {
     //Move the robot one step forward in the direction it is facing
 
     move() {
+        let moved = false;
         if (!this.hasBeenPlaced) {
             return console.log('You must place the robot first.');
         }
@@ -99,22 +102,29 @@ class Robot {
         //Move position
         switch (this.robotDirection) {
             case "NORTH":
-                (this.robotPosition[1] === 4) ? this.fallOffError("NORTH") : this.robotPosition[1] ++;
+                (this.robotPosition[1] === 4) ? this.fallOffError("NORTH") : (this.robotPosition[1] ++, moved = true);
                 break;
             case "SOUTH":
-                (this.robotPosition[1] === 0) ? this.fallOffError("SOUTH") : this.robotPosition[1] --;
+                (this.robotPosition[1] === 0) ? this.fallOffError("SOUTH") : (this.robotPosition[1] --, moved = true);
                 break;
             case "EAST":
-                (this.robotPosition[0] === 4) ? this.fallOffError("EAST") : this.robotPosition[0] --;
-            break;
+                (this.robotPosition[0] === 4) ? this.fallOffError("EAST") : (this.robotPosition[0] --, moved = true);
+                break;
             case "WEST":
-                (this.robotPosition[0] === 0) ? this.fallOffError("WEST") : this.robotPosition[1] --;
+                (this.robotPosition[0] === 0) ? this.fallOffError("WEST") : (this.robotPosition[1] --, moved = true);
                 break;
             default:
                 console.log("Invalid direction!");
                 break;
             }
-            console.log(`Moved one spot ${this.robotDirection}!`);
+
+
+            if (moved) {
+                console.log(`Moved one spot ${this.robotDirection}!`);
+            }
+
+
+            
     }
 
     fallOffError(direction){
@@ -183,6 +193,9 @@ function run() {
     let jimmy = new Robot();
     jimmy.place([4,4], 'NORTH', jimmy.allowedDirections);
     jimmy.move();
+    jimmy.left();
+    jimmy.move();
+    jimmy.report();
 }
 
 run();
