@@ -58,6 +58,9 @@ class Robot {
     //Do not construct with a positional value, because we haven't called PLACE yet.
         this.robotPosition = position;
         this.robotDirection = direction;
+
+        //Check if the robot has been placed before executing other functions
+        this.hasBeenPlaced = false;
     }
 
     //Place the robot at the given co-ordinates, and facing either N,S,E or W.
@@ -75,8 +78,7 @@ class Robot {
                 this.robotPosition = position;
                 this.robotDirection = direction;
                 console.log(`Placed robot at ${this.robotPosition}, facing ${this.robotDirection}!`);
-
-
+                this.hasBeenPlaced = true;
         } else {
             console.log('Please provide a valid position and direction for placement.');
         }
@@ -86,69 +88,43 @@ class Robot {
     //Move the robot one step forward in the direction it is facing
 
     move() {
+        if (!this.hasBeenPlaced) {
+            return console.log('You must place the robot first.');
+        }
+
         //1. Determine position and direction.
         //2. Ensure that positional values are not 4.
         //3. Increase the x or y value by one, depending on these factors.
 
-        if (this.robotPosition[0] <4 && this.robotPosition[1] <4) {
-            
-            //Check the current direction, and then increase or decrease the appropriate positional value.
-
-            switch (this.robotDirection) {
-                case "NORTH":
-                    this.robotPosition[1] ++;
-                    break;
-                case "SOUTH":
-                    this.robotPosition[1] --;
-                    break;
-                case "EAST":
-                    this.robotPosition[0] ++;
-                    break;
-                case "WEST":
-                    this.robotPosition[0] --;
-                    break;
-                default:
-                    console.log("Invalid direction!");
-                    break;
-                }
-                console.log(`Moved one spot ${this.robotDirection}!`);
-
-    } 
-
-    //X position checks
-
-    if (this.robotPosition[0] === 4 && this.robotDirection === "EAST") {
-        this.fallOffError("EAST");
+        //Move position
+        switch (this.robotDirection) {
+            case "NORTH":
+                (this.robotPosition[1] === 4) ? this.fallOffError("NORTH") : this.robotPosition[1] ++;
+                break;
+            case "SOUTH":
+                (this.robotPosition[1] === 0) ? this.fallOffError("SOUTH") : this.robotPosition[1] --;
+                break;
+            case "EAST":
+                (this.robotPosition[0] === 4) ? this.fallOffError("EAST") : this.robotPosition[0] --;
+            break;
+            case "WEST":
+                (this.robotPosition[0] === 0) ? this.fallOffError("WEST") : this.robotPosition[1] --;
+                break;
+            default:
+                console.log("Invalid direction!");
+                break;
+            }
+            console.log(`Moved one spot ${this.robotDirection}!`);
     }
 
-    else if (this.robotPosition[0] === 0 && this.robotDirection === "WEST") {
-        this.fallOffError("WEST");
+    fallOffError(direction){
+        console.log(`I cannot go any further ${this.robotDirection}, or I'll fall!`);
     }
-
-    //Y position checks
-
-    else if (this.robotPosition[1] === 4 && this.robotDirection === "NORTH") {
-        this.fallOffError("NORTH");
-    }
-
-    else if (this.robotPosition[1] === 0 && this.robotDirection === "SOUTH") {
-        this.fallOffError("SOUTH");
-    }
-
-
-    
-    
-    else {
-        //move position
-    }
-
-}
-
-fallOffError(direction){
-    console.log(`I cannot go any further ${this.robotDirection}, or I'll fall!`);
-}
 
     left() {
+        if (!this.hasBeenPlaced) {
+            return console.log('You must place the robot first.');
+        }
         //Change the direction 90 degrees to the left
         switch (this.robotDirection) {
             case "NORTH":
@@ -165,11 +141,16 @@ fallOffError(direction){
                 break;
             }
 
-         console.log(`Robot is now facing ${this.robotDirection}!`);
+            console.log(`Robot is now facing ${this.robotDirection}!`);
 
     }
 
     right() {
+
+        if (!this.hasBeenPlaced) {
+            return console.log('You must place the robot first.');
+        }
+
         //Change the direction 90 degrees to the right
         switch (this.robotDirection) {
             case "NORTH":
@@ -186,29 +167,22 @@ fallOffError(direction){
                 break;
             }
 
-         console.log(`Robot is now facing ${this.robotDirection}!`);
+            console.log(`Robot is now facing ${this.robotDirection}!`);
 
     }
     report() {
+        if (!this.hasBeenPlaced) {
+            return console.log('You must place the robot first.');
+        }
         console.log(`Robot is currently at ${this.robotPosition}, facing ${this.robotDirection}!`)
     }
 
 }
 
+function run() {
+    let jimmy = new Robot();
+    jimmy.place([4,4], 'NORTH', jimmy.allowedDirections);
+    jimmy.move();
+}
 
-let jimmy = new Robot();
-jimmy.place([4,4], 'EAST', jimmy.allowedDirections);
-jimmy.move();
-
-
-
-
-
-//For later: Could have a while loop:
-
-//While (robotHasntFallenOff) {
-    //jimmy.place etc
-// }
-
-
-
+run();
