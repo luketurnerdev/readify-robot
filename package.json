@@ -1,0 +1,20 @@
+{
+  "name": "readify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "robot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node robot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luketurnerdev/readify-robot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/luketurnerdev/readify-robot/issues"
+  },
+  "homepage": "https://github.com/luketurnerdev/readify-robot#readme"
+}
