@@ -14,29 +14,32 @@ class Robot {
     //Place the robot at the given co-ordinates, and facing either N,S,E or W.
 
     place(position, direction) {
+        let cellObstructed = false;
         let allowedDirections = ["NORTH", "SOUTH", "EAST", "WEST"]; 
 
         //Check if position is on the table
-        if (
-            (position[0] >=0 && position[0] <=5 && position[1] >= 0 && position[1] <=5)
+        if ((position[0] >=0 && position[0] <=5 && position[1] >= 0 && position[1] <=5)
             &&
             (allowedDirections.includes(direction))) {
 
-                //Set positions 
-                this.robotPosition = position;
-                this.robotDirection = direction;
-
                 //Check if the requested cell is obstructed
                 this.obstructedCells.forEach(element => {
-                    if (element[0] === this.robotPosition[0] && element[1] === this.robotPosition[1]){
+                    if (element[0] === position[0] && element[1] === position[1]){
+                        cellObstructed = true;
+
                         return console.log("Cannot place, there is an obstruction there!")
-                    } else {
-                        //Successfully place at the given spot due to no obstructions
-                        console.log(`Placed robot at ${this.robotPosition}, facing ${this.robotDirection}!`);
-                        this.hasBeenPlaced = true;
-                    }
+                    } 
                     
                 });
+
+                //Set positions 
+                if (!cellObstructed) {
+                    this.robotPosition = position
+                    this.robotDirection = direction
+                    //Successfully place at the given spot due to no obstructions
+                    console.log(`Placed robot at ${this.robotPosition}, facing ${this.robotDirection}!`);
+                    this.hasBeenPlaced = true;
+                }
         } else {
             console.log('Please provide a valid position and direction for placement.');
             //hasBeenPlaced remains false
@@ -47,47 +50,53 @@ class Robot {
     //Move the robot one step forward in the direction it is facing
 
     move() {
-        let moved = true;
+        // This array is being mutated, it should remain constant..
+        // const previousPosition = this.robotPosition;
+        let moved = false;
         if (!this.hasBeenPlaced) {
             return console.log('You must place the robot first.');
         }
-
         //1. Determine position and direction.
         //2. Ensure that positional values are not 5.
         //3. Increase the x or y value by one, depending on these factors.
 
+        //instead of setting a previous position, we could instead make 
+
         //Move position to new position
+        let suggestedPosition = [];
         switch (this.robotDirection) {
             case "NORTH":
-                (this.robotPosition[1] === 5 ) ? (this.fallOffError("NORTH"), moved = false) : (this.robotPosition[1] ++);
+                (this.robotPosition[1] === 5 ) ? (this.fallOffError("NORTH"), moved = false) : (suggestedPosition = this.robotPosition[1] +1);
                  break;
             case "SOUTH":
-                (this.robotPosition[1] === 0) ? (this.fallOffError("SOUTH"), moved = false)  : (this.robotPosition[1]--);
+                (this.robotPosition[1] === 0) ? (this.fallOffError("SOUTH"), moved = false)  : (suggestedPosition = this.robotPosition[1] -1);
                 break;
             case "EAST":
-                (this.robotPosition[0] === 5) ? (this.fallOffError("EAST"), moved = false)  : (this.robotPosition[0]++);
+                (this.robotPosition[0] === 5) ? (this.fallOffError("EAST"), moved = false)  : (suggestedPosition = this.robotPosition[0] +1);
                 break;
             case "WEST":
-                (this.robotPosition[0] === 0) ? (this.fallOffError("WEST"), moved = false)  : (this.robotPosition[0]--);
+                (this.robotPosition[0] === 0) ? (this.fallOffError("WEST"), moved = false)  : (suggestedPosition = this.robotPosition[0] -1);
             default:
                 break;
             }
 
+
             //Check if new position collides with an obstacle
     
             this.obstructedCells.forEach(element => {
-                if (element[0] === this.robotPosition[0] && element[1] === this.robotPosition[1]){
+                if (element[0] === suggestedPosition[0] && element[1] === suggestedPosition[1]){
                     moved = false;
                 }
                 
             });
 
-            console.log(moved)
 
             if (moved) {
                 console.log(`Moved one spot ${this.robotDirection}!`);
             } else {
                 console.log("There was an obstruction in the way!")
+                //Reset the robots position because there was an obstruction
+                // this.robotPosition = previousPosition;
             }
 
 
@@ -151,27 +160,41 @@ class Robot {
         console.log(`Robot is currently at ${this.robotPosition}, facing ${this.robotDirection}!`)
     }
 
-    createObstruction(x,y) {
+
+    avoid(x,y) {
+        if ((x === this.robotPosition[0] && y === this.robotPosition[1]) || x>5 || y>5 ) {
+            return console.log("Invalid position to avoid!")
+        }
+        //Mark this cell as an obstruction
         this.obstructedCells.push(([x,y]));
-    }
-
-    avoid() {
-
     }
 
 }
 
 function run() {
     let jimmy = new Robot();
+    jimmy.place([1,2], 'EAST', jimmy.allowedDirections);
+    jimmy.report();
 
-    jimmy.createObstruction(0,1);
 
-    //Failed placement
-    jimmy.place([0,1], 'NORTH', jimmy.allowedDirections);
-    //Successful placement
-    jimmy.place([0,5], 'NORTH', jimmy.allowedDirections);
+    jimmy.avoid(2,2);
+    jimmy.avoid(2,3);
+    jimmy.report();
 
     jimmy.move();
+    
+    jimmy.report();
+
+    jimmy.place([2,3], 'EAST', jimmy.allowedDirections);
+    jimmy.report();
+
+    jimmy.move();
+    jimmy.report();
+
+    jimmy.left();
+    jimmy.move();
+
+    jimmy.report();
 
 
     // console.log('Test 1: Expected output: 0,1,NORTH');
