@@ -12,7 +12,7 @@ class Robot {
     //Place the robot at the given co-ordinates, and facing either N,S,E or W.
 
     place(position, direction) {
-        let allowedDirections = ["NORTH", "SOUTH", "EAST", "WEST"];
+        let allowedDirections = ["NORTH", "SOUTH", "EAST", "WEST"]; 
 
         //Check if position is on the table
         //If first and second position are both between 0 and 4 and the direction is valid, let it go through
@@ -162,7 +162,7 @@ function run() {
     */
 
     //Moving the robot off the board
-    
+
     /*
     jimmy.place([4,4], 'NORTH', jimmy.allowedDirections);
     jimmy.move();
