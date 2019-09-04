@@ -32,13 +32,17 @@ class Robot {
                     
                 });
 
-                //Set positions 
+                //Set position + direction
                 if (!cellObstructed) {
                     this.robotPosition = position
-                    this.robotDirection = direction
+                    if (!this.hasBeenPlaced) {
+                        this.robotDirection = direction;
+                        this.hasBeenPlaced = true;
+                    }
+                    
                     //Successfully place at the given spot due to no obstructions
                     console.log(`Placed robot at ${this.robotPosition}, facing ${this.robotDirection}!`);
-                    this.hasBeenPlaced = true;
+                    
                 }
         } else {
             console.log('Please provide a valid position and direction for placement.');
@@ -50,8 +54,6 @@ class Robot {
     //Move the robot one step forward in the direction it is facing
 
     move() {
-        // This array is being mutated, it should remain constant..
-        // const previousPosition = this.robotPosition;
         let moved = true;
         if (!this.hasBeenPlaced) {
             return console.log('You must place the robot first.');
@@ -178,22 +180,11 @@ class Robot {
 function run() {
     let jimmy = new Robot();
     jimmy.place([1,2], 'EAST', jimmy.allowedDirections);
-
-
-
     jimmy.avoid(2,2);
     jimmy.avoid(2,3);
-
-
     jimmy.move();
-    
-    
     jimmy.place([2,3], 'EAST', jimmy.allowedDirections);
-    
-    
     jimmy.move();
-    
-    
     jimmy.left();
     jimmy.move();
     jimmy.report();
