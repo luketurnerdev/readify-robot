@@ -37,8 +37,7 @@ class Robot {
     //Move the robot one step forward in the direction it is facing
 
     move() {
-        let moved = false;
-        let cellObstructed = false;
+        let moved = true;
         if (!this.hasBeenPlaced) {
             return console.log('You must place the robot first.');
         }
@@ -47,10 +46,7 @@ class Robot {
         //2. Ensure that positional values are not 5.
         //3. Increase the x or y value by one, depending on these factors.
 
-
-        //EG obstructed cell is [0,1]
-
-        //Move position
+        //Move position to new position
         switch (this.robotDirection) {
             case "NORTH":
                 (this.robotPosition[1] === 5 ) ? this.fallOffError("NORTH") : (this.robotPosition[1] ++);
@@ -66,19 +62,21 @@ class Robot {
             default:
                 break;
             }
+
+            //Check if new position collides with an obstacle
     
             this.obstructedCells.forEach(element => {
                 if (element[0] === this.robotPosition[0] && element[1] === this.robotPosition[1]){
                     moved = false;
                 }
-                else {
-                    moved = true;
-                }
+                
             });
 
 
             if (moved) {
                 console.log(`Moved one spot ${this.robotDirection}!`);
+            } else {
+                console.log("There was an obstruction in the way!")
             }
 
 
