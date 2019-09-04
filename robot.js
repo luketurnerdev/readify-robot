@@ -52,7 +52,7 @@ class Robot {
     move() {
         // This array is being mutated, it should remain constant..
         // const previousPosition = this.robotPosition;
-        let moved = false;
+        let moved = true;
         if (!this.hasBeenPlaced) {
             return console.log('You must place the robot first.');
         }
@@ -60,22 +60,25 @@ class Robot {
         //2. Ensure that positional values are not 5.
         //3. Increase the x or y value by one, depending on these factors.
 
-        //instead of setting a previous position, we could instead make 
+        //instead of setting a previous position, we could instead make suggestedpos
 
         //Move position to new position
-        let suggestedPosition = [];
+        let x = this.robotPosition[0]
+        let y = this.robotPosition[1]
+        let suggestedPosition = [x,y];
+
         switch (this.robotDirection) {
             case "NORTH":
-                (this.robotPosition[1] === 5 ) ? (this.fallOffError("NORTH"), moved = false) : (suggestedPosition = this.robotPosition[1] +1);
+                (this.robotPosition[1] === 5 ) ? (this.fallOffError("NORTH"), moved = false) : (suggestedPosition[1] = this.robotPosition[1] +1);
                  break;
             case "SOUTH":
-                (this.robotPosition[1] === 0) ? (this.fallOffError("SOUTH"), moved = false)  : (suggestedPosition = this.robotPosition[1] -1);
+                (this.robotPosition[1] === 0) ? (this.fallOffError("SOUTH"), moved = false)  : (suggestedPosition[1] = this.robotPosition[1] -1);
                 break;
             case "EAST":
-                (this.robotPosition[0] === 5) ? (this.fallOffError("EAST"), moved = false)  : (suggestedPosition = this.robotPosition[0] +1);
+                (this.robotPosition[0] === 5) ? (this.fallOffError("EAST"), moved = false)  : (suggestedPosition[0] = this.robotPosition[0] +1);
                 break;
             case "WEST":
-                (this.robotPosition[0] === 0) ? (this.fallOffError("WEST"), moved = false)  : (suggestedPosition = this.robotPosition[0] -1);
+                (this.robotPosition[0] === 0) ? (this.fallOffError("WEST"), moved = false)  : (suggestedPosition[0] = this.robotPosition[0] -1);
             default:
                 break;
             }
@@ -93,6 +96,7 @@ class Robot {
 
             if (moved) {
                 console.log(`Moved one spot ${this.robotDirection}!`);
+                this.robotPosition = suggestedPosition;
             } else {
                 console.log("There was an obstruction in the way!")
                 //Reset the robots position because there was an obstruction
@@ -174,27 +178,27 @@ class Robot {
 function run() {
     let jimmy = new Robot();
     jimmy.place([1,2], 'EAST', jimmy.allowedDirections);
-    jimmy.report();
+
 
 
     jimmy.avoid(2,2);
     jimmy.avoid(2,3);
-    jimmy.report();
+
 
     jimmy.move();
     
-    jimmy.report();
-
+    
     jimmy.place([2,3], 'EAST', jimmy.allowedDirections);
-    jimmy.report();
-
+    
+    
     jimmy.move();
-    jimmy.report();
-
+    
+    
     jimmy.left();
     jimmy.move();
-
     jimmy.report();
+
+
 
 
     // console.log('Test 1: Expected output: 0,1,NORTH');
