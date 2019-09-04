@@ -5,6 +5,8 @@ class Robot {
         this.robotPosition = position;
         this.robotDirection = direction;
 
+        this.obstructedCells = [];
+
         //Check if the robot has been placed before executing other functions
         this.hasBeenPlaced = false;
     }
@@ -20,7 +22,7 @@ class Robot {
             (position[0] >=0 && position[0] <=5 && position[1] >= 0 && position[1] <=5)
             &&
             (allowedDirections.includes(direction))) {
-                //Set positions
+                //Set position
                 this.robotPosition = position;
                 this.robotDirection = direction;
                 console.log(`Placed robot at ${this.robotPosition}, facing ${this.robotDirection}!`);
@@ -36,6 +38,7 @@ class Robot {
 
     move() {
         let moved = false;
+        let cellObstructed = false;
         if (!this.hasBeenPlaced) {
             return console.log('You must place the robot first.');
         }
@@ -44,22 +47,35 @@ class Robot {
         //2. Ensure that positional values are not 5.
         //3. Increase the x or y value by one, depending on these factors.
 
+
+        //EG obstructed cell is [0,1]
+
         //Move position
         switch (this.robotDirection) {
             case "NORTH":
-                (this.robotPosition[1] === 5) ? this.fallOffError("NORTH") : (this.robotPosition[1] ++, moved = true);
-                break;
+                (this.robotPosition[1] === 5 ) ? this.fallOffError("NORTH") : (this.robotPosition[1] ++);
+                 break;
             case "SOUTH":
-                (this.robotPosition[1] === 0) ? this.fallOffError("SOUTH") : (this.robotPosition[1]--, moved = true);
+                (this.robotPosition[1] === 0) ? this.fallOffError("SOUTH") : (this.robotPosition[1]--);
                 break;
             case "EAST":
-                (this.robotPosition[0] === 5) ? this.fallOffError("EAST") : (this.robotPosition[0]++, moved = true);
+                (this.robotPosition[0] === 5) ? this.fallOffError("EAST") : (this.robotPosition[0]++);
                 break;
             case "WEST":
-                (this.robotPosition[0] === 0) ? this.fallOffError("WEST") : (this.robotPosition[0]--, moved = true);
+                (this.robotPosition[0] === 0) ? this.fallOffError("WEST") : (this.robotPosition[0]--);
             default:
                 break;
             }
+    
+            this.obstructedCells.forEach(element => {
+                if (element[0] === this.robotPosition[0] && element[1] === this.robotPosition[1]){
+                    moved = false;
+                }
+                else {
+                    moved = true;
+                }
+            });
+
 
             if (moved) {
                 console.log(`Moved one spot ${this.robotDirection}!`);
@@ -116,7 +132,6 @@ class Robot {
                 this.robotDirection = "NORTH";
 
             }
-
             console.log(`Robot is now facing ${this.robotDirection}!`);
 
     }
@@ -127,13 +142,26 @@ class Robot {
         console.log(`Robot is currently at ${this.robotPosition}, facing ${this.robotDirection}!`)
     }
 
+    createObstruction(x,y) {
+        this.obstructedCells.push(([x,y]));
+    }
+
+    avoid() {
+
+    }
+
 }
 
 function run() {
     let jimmy = new Robot();
     //First test
-    jimmy.place([5,5], 'NORTH', jimmy.allowedDirections);
+    jimmy.place([0,0], 'NORTH', jimmy.allowedDirections);
+    jimmy.createObstruction(0,1);
+    jimmy.createObstruction(0,3);
+
     jimmy.move();
+
+
     // console.log('Test 1: Expected output: 0,1,NORTH');
     // jimmy.report();
 
@@ -190,5 +218,14 @@ function run() {
 // Iteration 1 - we need to increase the table size to 6x6
 // What needs to happen here?
 //  Move conditionals need to be changed from 4 to 5
+
+//Iteration 2 - make avoid command 
+//Need to create an obstruction first.
+// If a cell is an obstruction, activate a boolean flag
+// Then if a robot tries to MOVE or PLACE onto the given cell, display an error message
+
+//Create obstructed cells array that determines which cells have obstructions on them
+//Check on MOVE and PLACE if the cell is obstructed. If they are, do not execute the command.
+
 
 run();
