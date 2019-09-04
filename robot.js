@@ -17,16 +17,26 @@ class Robot {
         let allowedDirections = ["NORTH", "SOUTH", "EAST", "WEST"]; 
 
         //Check if position is on the table
-        //If first and second position are both between 0 and 5 and the direction is valid, let it go through
         if (
             (position[0] >=0 && position[0] <=5 && position[1] >= 0 && position[1] <=5)
             &&
             (allowedDirections.includes(direction))) {
-                //Set position
+
+                //Set positions 
                 this.robotPosition = position;
                 this.robotDirection = direction;
-                console.log(`Placed robot at ${this.robotPosition}, facing ${this.robotDirection}!`);
-                this.hasBeenPlaced = true;
+
+                //Check if the requested cell is obstructed
+                this.obstructedCells.forEach(element => {
+                    if (element[0] === this.robotPosition[0] && element[1] === this.robotPosition[1]){
+                        return console.log("Cannot place, there is an obstruction there!")
+                    } else {
+                        //Successfully place at the given spot due to no obstructions
+                        console.log(`Placed robot at ${this.robotPosition}, facing ${this.robotDirection}!`);
+                        this.hasBeenPlaced = true;
+                    }
+                    
+                });
         } else {
             console.log('Please provide a valid position and direction for placement.');
             //hasBeenPlaced remains false
@@ -49,16 +59,16 @@ class Robot {
         //Move position to new position
         switch (this.robotDirection) {
             case "NORTH":
-                (this.robotPosition[1] === 5 ) ? this.fallOffError("NORTH") : (this.robotPosition[1] ++);
+                (this.robotPosition[1] === 5 ) ? (this.fallOffError("NORTH"), moved = false) : (this.robotPosition[1] ++);
                  break;
             case "SOUTH":
-                (this.robotPosition[1] === 0) ? this.fallOffError("SOUTH") : (this.robotPosition[1]--);
+                (this.robotPosition[1] === 0) ? (this.fallOffError("SOUTH"), moved = false)  : (this.robotPosition[1]--);
                 break;
             case "EAST":
-                (this.robotPosition[0] === 5) ? this.fallOffError("EAST") : (this.robotPosition[0]++);
+                (this.robotPosition[0] === 5) ? (this.fallOffError("EAST"), moved = false)  : (this.robotPosition[0]++);
                 break;
             case "WEST":
-                (this.robotPosition[0] === 0) ? this.fallOffError("WEST") : (this.robotPosition[0]--);
+                (this.robotPosition[0] === 0) ? (this.fallOffError("WEST"), moved = false)  : (this.robotPosition[0]--);
             default:
                 break;
             }
@@ -72,6 +82,7 @@ class Robot {
                 
             });
 
+            console.log(moved)
 
             if (moved) {
                 console.log(`Moved one spot ${this.robotDirection}!`);
@@ -152,10 +163,13 @@ class Robot {
 
 function run() {
     let jimmy = new Robot();
-    //First test
-    jimmy.place([0,0], 'NORTH', jimmy.allowedDirections);
+
     jimmy.createObstruction(0,1);
-    jimmy.createObstruction(0,3);
+
+    //Failed placement
+    jimmy.place([0,1], 'NORTH', jimmy.allowedDirections);
+    //Successful placement
+    jimmy.place([0,5], 'NORTH', jimmy.allowedDirections);
 
     jimmy.move();
 
