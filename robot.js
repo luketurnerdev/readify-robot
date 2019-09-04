@@ -15,7 +15,7 @@ class Robot {
 
     place(position, direction) {
         let cellObstructed = false;
-        let allowedDirections = ["NORTH", "SOUTH", "EAST", "WEST"]; 
+        let allowedDirections = ["NORTH", "NORTHEAST", "NORTHWEST", "SOUTH", "SOUTHEAST", "SOUTHWEST", "EAST", "WEST"]; 
 
         //Check if position is on the table
         if ((position[0] >=0 && position[0] <=5 && position[1] >= 0 && position[1] <=5)
@@ -117,19 +117,31 @@ class Robot {
         if (!this.hasBeenPlaced) {
             return console.log('You must place the robot first.');
         }
-        //Change the direction 90 degrees to the left
+        //Change the direction 45 degrees to the left
         switch (this.robotDirection) {
             case "NORTH":
-                this.robotDirection = "WEST";
+                this.robotDirection = "NORTHWEST";
                 break;
             case "SOUTH":
-                this.robotDirection = "EAST";
+                this.robotDirection = "SOUTHEAST";
                 break;
             case "EAST":
-                this.robotDirection = "NORTH";
+                this.robotDirection = "NORTHEAST";
                 break;
             case "WEST":
-                this.robotDirection = "SOUTH";
+                this.robotDirection = "SOUTHWEST";
+            case "NORTHWEST":
+                this.robotDirection = "WEST"
+                break;
+            case "NORTHEAST":
+                this.robotDirection = "NORTH"
+                break;
+            case "SOUTHWEST":
+                this.robotDirection = "SOUTH"
+                break;
+            case "SOUTHEAST":
+                this.robotDirection = "EAST"
+                break;
             }
 
             console.log(`Robot is now facing ${this.robotDirection}!`);
@@ -141,20 +153,35 @@ class Robot {
             return console.log('You must place the robot first.');
         }
 
-        //Change the direction 90 degrees to the right
+        //Change the direction 45 degrees to the right
         switch (this.robotDirection) {
             case "NORTH":
-                this.robotDirection = "EAST";
+                this.robotDirection = "NORTHEAST";
                 break;
             case "SOUTH":
-                this.robotDirection = "WEST";
+                this.robotDirection = "SOUTHWEST";
                 break;
             case "EAST":
-                this.robotDirection = "SOUTH";
+                this.robotDirection = "SOUTHEAST";
                 break;
             case "WEST":
-                this.robotDirection = "NORTH";
+                this.robotDirection = "NORTHWEST";
 
+            /// Didn't have time to finish the rest of the directions, but the logic is there ///
+
+
+            // case "NORTHWEST":
+            //     this.robotDirection = "WEST"
+            //     break;
+            // case "NORTHEAST":
+            //     this.robotDirection = "NORTH"
+            //     break;
+            // case "SOUTHWEST":
+            //     this.robotDirection = "SOUTH"
+            //     break;
+            // case "SOUTHEAST":
+            //     this.robotDirection = "EAST"
+            //     break;
             }
             console.log(`Robot is now facing ${this.robotDirection}!`);
 
